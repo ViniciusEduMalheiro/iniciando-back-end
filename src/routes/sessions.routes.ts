@@ -1,7 +1,5 @@
 import { Router } from 'express';
-
 import AuthenticateUserService from '../services/AuthenticateUserService';
-
 const sessionsRouter = Router();
 
 
@@ -14,14 +12,14 @@ try {
 
   const authenticateUser = new AuthenticateUserService();
 
-  const { user } = await authenticateUser.execute({
+  const { user, token } = await authenticateUser.execute({
     email,
     password,
   })
 
   delete user.password;
 
-  return response.json({ user })
+  return response.json({ user, token })
   } catch (err) {
     return response.status(400).json({ error: err.message })
   }

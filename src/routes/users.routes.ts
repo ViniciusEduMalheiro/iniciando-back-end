@@ -2,12 +2,20 @@ import { Router } from 'express';
 
 import CreateUserService from '../services/CreateUserService';
 
+
+
+import ensureAuthenticated from '../middllewares/ensureAuthenticated';
+
+import uploadConfig from '../config/upload';
+
+import multer from 'multer';
+// Rota: Receber a requisição, chamar outro arquivo, devolver uma resposta
 const usersRouter = Router();
 
-
-// Rota: Receber a requisição, chamar outro arquivo, devolver uma resposta
+const upload = multer(uploadConfig)
 
 usersRouter.post('/', async (request, response) => {
+
 
 try {
     const { name, email, password } = request.body;
@@ -27,5 +35,14 @@ try {
     return response.status(400).json({ error: err.message })
   }
 });
+
+usersRouter.patch(
+  '/avatar',
+  ensureAuthenticated,
+  upload.single('avatar'),
+  async (request, response) => {
+  return response.json({ ok: true });
+  },
+);
 
 export default usersRouter;
